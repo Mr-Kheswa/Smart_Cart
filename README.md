@@ -26,8 +26,12 @@ ___
 CSV columns:
 * **product_id** - integer unique ID
 * **name** - product name string
+* **category** - specified field to find the product.
 * **tags** - keywords as semicolon separated tokens or JSON like list
 * **description** - short text used for TF - IDF
+* **price** - value of the product.
+* **rating** - recommendation of people who purchased.
+* **stock** - checks the stock number and range availability.
 
 **Example row:**
 101,Wireless Mouse,Electronics,mouse;wireless;peripheral,Compact wireless mouse with USB receiver and ergonomic design,199.99,4.5,25
