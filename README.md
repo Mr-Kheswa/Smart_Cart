@@ -10,4 +10,5 @@ ___
 * **smart_cart.py** - single file recommender implementation.
 * **rush.sh** - optional use but a small runner script to demo the recommender.
 
+[Setup and Basic Project Files](https://github.com/users/Mr-Kheswa/projects/4?pane=issue&itemId=132728546&issue=Mr-Kheswa%7CSmart_Cart%7C1)
 ___
