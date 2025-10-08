@@ -21,3 +21,14 @@ ___
 
 [Setup and Basic Project Files](https://github.com/users/Mr-Kheswa/projects/4?pane=issue&itemId=132728546&issue=Mr-Kheswa%7CSmart_Cart%7C1)
 ___
+
+## Data format (data/products.csv)
+CSV columns:
+* **product_id** - integer unique ID
+* **name** - product name string
+* **tags** - keywords as semicolon separated tokens or JSON like list
+* **description** - short text used for TF - IDF
+
+**Example row:**
+101,Wireless Mouse,Electronics,mouse;wireless;peripheral,Compact wireless mouse with USB receiver and ergonomic design,199.99,4.5,25
+
