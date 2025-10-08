@@ -32,3 +32,5 @@ CSV columns:
 **Example row:**
 101,Wireless Mouse,Electronics,mouse;wireless;peripheral,Compact wireless mouse with USB receiver and ergonomic design,199.99,4.5,25
 
+[Create a Sample Dataset](https://github.com/Mr-Kheswa/Smart_Cart/issues/2)
+___
