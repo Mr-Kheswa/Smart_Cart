@@ -3,6 +3,15 @@ A very small content based Artificial Intelligency application recommender named
 
 ___
 
+## Quick overview
+* Tags are parsed into sets of keywords.
+* Descriptions are vectorized with TF - IDF and compared with cosine similarity.
+* Jaccard similarity is computed on tag sets.
+* Combine score = alpha * jaccard + (1 - alpha) * cosine (default alpha = 0.5).
+* Recommendations return the top most similar products with the score breakdown.
+
+___
+
 ## Files in this project root
 * **README.md** - current file.
 * **requirements.txt** - Python dependencies.
