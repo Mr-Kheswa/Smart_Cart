@@ -1,2 +1,2 @@
 # Smart_Cart
-A simple content based product recommender that suggests similar products using product metadata and cosine similarity. This approach, models each product as a feature vector (category, tags, description) and uses cosine similarity to find items closest to a user's liked product. 
+A very small content based Artificial Intelligency application recommender named Smart Cart, it is a minimal content based product recommender. It models each product with two features which are **tags** which will be based on set of keywords and **description** based on short texts. Recommendations combine Jaccard similarity on tags with cosine similarity on **Term frequency - inverse document frequency** TF-IDF descriptions & combined score ranks recommendations.
