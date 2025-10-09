@@ -13,10 +13,12 @@ ___
 ___
 
 ## Files in this project root
+* **data/products.csv** - sample product dataset.
+* **app.py** - single file recommender implementation to define and configure the core application logic.
+* **main.py** - offline entry point of the application.
+* **paths.py** - driving the path linkage via the folders to align to its calling.
 * **README.md** - current file.
 * **requirements.txt** - Python dependencies.
-* **data/products.csv** - sample product dataset.
-* **smart_cart.py** - single file recommender implementation.
 * **rush.sh** - optional use but a small runner script to demo the recommender.
 
 [Setup and Basic Project Files](https://github.com/users/Mr-Kheswa/projects/4?pane=issue&itemId=132728546&issue=Mr-Kheswa%7CSmart_Cart%7C1)
