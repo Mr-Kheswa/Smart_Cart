@@ -1,5 +1,5 @@
 # run.sh - start CLI or Streamlit web app
-MODE=${1:-web}      # 'web' or 'cli'
+MODE=${1:-web} # web or cli
 PROD_ID=${2:-101}
 TOP_N=${3:-5}
 
