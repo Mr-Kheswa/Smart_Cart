@@ -51,6 +51,8 @@ ___
 [Setup and Basic Project Files](https://github.com/users/Mr-Kheswa/projects/4?pane=issue&itemId=132728546&issue=Mr-Kheswa%7CSmart_Cart%7C1)
 ___
 
+___
+
 ## Data format (data/products.csv)
 CSV columns:
 * **product_id** - integer unique ID
