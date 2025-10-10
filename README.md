@@ -11,6 +11,34 @@ ___
 
 ___
 
+## Application Features
+* **CSV ingestion:** reads products data from data/products.csv.
+* **Tag similarity:** uses jaccard index to compare product tags.
+* **Description similarity:** applies TF - IDF vectorization and cosine similarity.
+* **Weighted scoring:** combines tag and description scores with custamizable weights.
+* **Command line interface:** accepts product ID and scoring parameters via CLI
+
+**NB:** Main features of this application are **tags** and **description.**
+___
+
+## Application Requirements
+Insatll dependencies using: **pip install -r requirements.txt**
+
+**Dependencies:** which will installed.
+* pandas
+* scikit-learn
+* streamlit
+
+___
+
+## Application Usage
+Run the recommender from terminal:
+**CLI / PowerShell**
+
+**python main.py --product 101 --top 5 --w_tag 0.6 --w_desc 0.4**
+
+___
+
 ## Files in this project root
 * **data/products.csv** - sample product dataset.
 * **app.py** - single file recommender implementation to define and configure the core application logic.
