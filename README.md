@@ -33,6 +33,7 @@ CSV columns:
 * **price** - value of the product.
 * **rating** - recommendation of people who purchased.
 * **stock** - checks the stock number and range availability.
+* **image_url** - image intercetion link to csv
 
 **Example row:**
 101,Wireless Mouse,Electronics,mouse;wireless;peripheral,Compact wireless mouse with USB receiver and ergonomic design,199.99,4.5,25
