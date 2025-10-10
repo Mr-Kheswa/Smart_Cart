@@ -7,7 +7,6 @@ ___
 * Tags are parsed into sets of keywords.
 * Descriptions are vectorized with TF - IDF and compared with cosine similarity.
 * Jaccard similarity is computed on tag sets.
-* Combine score = alpha * jaccard + (1 - alpha) * cosine (default alpha = 0.5).
 * Recommendations return the top most similar products with the score breakdown.
 
 ___
@@ -39,4 +38,26 @@ CSV columns:
 101,Wireless Mouse,Electronics,mouse;wireless;peripheral,Compact wireless mouse with USB receiver and ergonomic design,199.99,4.5,25
 
 [Create a Sample Dataset](https://github.com/Mr-Kheswa/Smart_Cart/issues/2)
+___
+
+## Key similarities
+1. **Content Based Filtering**
+* **Smart Cart uses product metadata** which are tags and description to recommend similar items.
+* it does not reply on user history or collaborative data, its focus it is the product's own features.
+2. **Tag Modeling with Jaccard Similarity**
+* **Tags** are treated as keyword sets. **For instance:** "wireles, mouse."
+* **Jaccard similarity** compares overlap between tag sets to find related products.
+3. **Text Based Modeling with TF-IDF**
+* Product desccriptions are vectorized using **Term Frequency - Inverse Document Frequency (TF -IDF**.
+* **Cosine similarity** is used to measure semantic closeness between descriptions.
+4. **Modular, Explainable Arichitecture**
+* Each product is modeled with clear features: ID, name,, category, tags, description, price, rating, stock, image.
+* The assistant can explain why a product is recommended, and this aligns with explainable AI principles.
+5. **Image Integration and UI Personalization**
+* Local images are displayed alongside recommendations, enhancing visual context.
+
+**In summary**, Smart Cart is a compact, contect based recommender that combines structured tags and semantic descriptions to deliver explainable.
+
+[Core Similarity](https://github.com/Mr-Kheswa/Smart_Cart/issues/3)
+
 ___
