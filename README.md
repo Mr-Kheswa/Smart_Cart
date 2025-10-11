@@ -45,12 +45,14 @@ Run the recommender from terminal:
 **python main.py --product 101 --top 5 --w_tag 0.6 --w_desc 0.4**
 
 ### Web Application Interface
-a **streamlit powered web interface** for interactive product exploration and recommendations.
-TO launch the web application:
+[Web Interface:](https://github.com/Mr-Kheswa/Smart_Cart/issues/6)
+is a **streamlit powered web interface** for interactive product exploration and recommendations.
+
+To launch the web application:
 
 **streamlit run app.py**
 
-The above command opens a browser where you can:
+The above command opens a browser:
 * Select a product by ID or name.
 * Adjust tag / description weights.
 * View top recommended items with score breakdowns and images.
