@@ -51,8 +51,9 @@ is a **streamlit powered web interface** for interactive product exploration and
 To launch the web application:
 
 **streamlit run app.py**
+**python -m streamlit run app.py**
 
-The above command opens a browser:
+The above of these each command will opens a browser:
 * Select a product by ID or name.
 * Adjust tag / description weights.
 * View top recommended items with score breakdowns and images.

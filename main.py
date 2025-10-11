@@ -8,7 +8,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import linear_kernel
 
 # path to the product dataset csv file
-DATA_PATH = "data/products.csv"
+DATA_PATH = "products.csv"
 
 # load and preprocess the product dataset
 def load_df(path: str = DATA_PATH) -> pd.DataFrame:
@@ -77,3 +77,4 @@ def cli_main():
 # entry point for cli execution
 if __name__ == "__main__":
     cli_main()
+    

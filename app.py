@@ -1,4 +1,5 @@
 # app.py
+# libraries import for argument parsing, data handling, numerical operations, and text similarity analysis
 import os
 from io import BytesIO
 from pathlib import Path
@@ -9,8 +10,8 @@ import requests
 
 from main import load_df, build_tfidf, recommend
 
-DATA_PATH = "data/products.csv"
-IMAGES_DIR = Path("data/images")  # local images folder
+DATA_PATH = "products.csv"
+IMAGES_DIR = Path("products.csv/image_url")  # local images folder
 
 # ---------- Visual theme ----------
 PAGE_STYLE = """
