@@ -1,0 +1,21 @@
+product_id,name,category,tags,description,price,rating,stock
+101,Wireless Mouse,Electronics,mouse;wireless;peripheral,Compact wireless mouse with USB receiver and ergonomic design,199.99,4.5,25
+102,Wireless Keyboard,Electronics,keyboard;wireless;peripheral,Slim wireless keyboard with rechargeable battery,299.00,4.1,30
+103,USB-C Hub,Electronics,hub;usb-c;adapter,Multiport USB-C hub with HDMI and 3 USB 3.0 ports,349.00,4.3,40
+104,Laptop Sleeve,Accessories,sleeve;laptop;protection,Neoprene sleeve fits 13-15 inch laptops and protects from scratches,149.00,4.2,50
+105,Bluetooth Speaker,Electronics,speaker;bluetooth;audio,Portable speaker with rich bass and long battery life,629.00,4.6,15
+106,Portable Charger,Electronics,powerbank;portable;battery,10000mAh portable charger with dual output,399.00,4.4,60
+107,Smartphone Case,Accessories,case;phone;protection,Shockproof smartphone case with raised edges,89.00,4.0,120
+108,LED Desk Lamp,Home,lamp;led;desk,Adjustable LED desk lamp with touch controls and USB charging,249.00,4.3,35
+109,Office Chair,Furniture,chair;office;ergonomic,Ergonomic office chair with lumbar support and swivel base,1499.00,4.2,8
+110,Action Camera,Electronics,camera;action;waterproof,4K action camera with waterproof housing and wide-angle lens,1799.00,4.5,12
+111,Tripod Stand,Accessories,tripod;camera;stand,Lightweight tripod stand for cameras and phones,249.00,4.0,45
+112,Fitness Tracker,Wearables,fitness;tracker;health,Activity tracker with heart rate and sleep monitoring,699.00,4.1,22
+113,Running Shoes,Apparel,shoes;running;sport,Lightweight running shoes with breathable mesh upper,899.00,4.4,28
+114,Water Bottle,Home,bottle;hydration;outdoor,Insulated stainless steel water bottle 750ml,199.00,4.6,200
+115,Coffee Maker,Home,coffee;appliance;kitchen,12-cup drip coffee maker with programmable timer,999.00,4.0,18
+116,Electric Kettle,Home,kettle;appliance;electric,1.7L electric kettle with auto shut-off feature,349.00,4.2,25
+117,Desk Organizer,Home,organizer;desk;office,Multi-compartment desk organizer for stationery,129.00,4.0,80
+118,Graphic Tablet,Electronics,tablet;drawing;creative,Graphics tablet with pressure-sensitive pen for artists,1599.00,4.3,14
+119,Noise Reduction Earbuds,Electronics,earbuds;audio;noise-reduction,In-ear earbuds with active noise reduction and mic,699.00,4.2,40
+120,USB Flash Drive,Electronics,usb;storage;flash,64GB USB 3.0 flash drive with high-speed transfer,149.00,4.1,150
