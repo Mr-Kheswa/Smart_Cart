@@ -18,6 +18,13 @@ ___
 * **Weighted scoring:** combines tag and description scores with custamizable weights.
 * **Command line interface:** accepts product ID and scoring parameters via CLI
 
+### Web Application interface features
+* **interactive UI:** broswe products, view images, and get recommendations in real time.
+* **Live scoring:** combines jaccard and TF - IDF similarity with adjustable weights.
+* **Explainable output:** displays score breakdowns and highlights why products are recommended.
+* **Image integration:** shows local or remote product images for visual context.
+* **Responsive layout:** clean design for intuitive navigation.
+
 **NB:** Main features of this application are **tags** and **description.**
 ___
 
@@ -36,6 +43,17 @@ Run the recommender from terminal:
 **CLI / PowerShell**
 
 **python main.py --product 101 --top 5 --w_tag 0.6 --w_desc 0.4**
+
+### Web Application Interface
+a **streamlit powered web interface** for interactive product exploration and recommendations.
+TO launch the web application:
+
+**streamlit run app.py**
+
+The above command opens a browser where you can:
+* Select a product by ID or name.
+* Adjust tag / description weights.
+* View top recommended items with score breakdowns and images.
 
 ___
 
