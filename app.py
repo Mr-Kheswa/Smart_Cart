@@ -9,17 +9,92 @@ from sklearn.metrics.pairwise import cosine_similarity
 # ---------- Visual theme ----------
 PAGE_STYLE = """
 <style>
-html, body, .stApp { background: linear-gradient(180deg,#f8fbff 0%, #ffffff 100%); color: #0b2233; }
-.card { background: #ffffff; border: 1px solid rgba(9,30,40,0.06); padding: 14px; border-radius: 10px; box-shadow: 0 6px 18px rgba(15,23,42,0.05); }
-.app-title { font-weight:700; color:#07243a; }
-.meta { color:#556b78; font-size:13px; margin-top:4px; }
-.chat-inbox { max-height:360px; overflow:auto; padding:8px; }
-.bubble-user { background:#eef2ff; padding:10px; border-radius:12px; margin:8px 0; text-align:right; color:#07243a;}
-.bubble-assistant { background:#f0fdfa; padding:10px; border-radius:12px; margin:8px 0; text-align:left; color:#052430;}
-.kv { color:#556b78; font-size:13px; }
-.hint { color:#6b7f87; font-size:13px; }
-.small { color:#6b7f87; font-size:12px; }
-.rating { font-weight:600; color:#0b2233; }
+:root {
+  --bg: #f9fafb;
+  --card: #ffffff;
+  --muted: #6b7280;
+  --accent: #2563eb;   /* Smart Cart blue */
+  --accent-2: #10b981; /* Emerald green */
+}
+
+html, body, .stApp {
+  background: var(--bg);
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  color: #111827;
+  margin: 0;
+  padding: 0;
+}
+
+/* Card styling */
+.card {
+  background: var(--card);
+  border: 1px solid rgba(0,0,0,0.05);
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  margin-bottom: 16px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+}
+
+/* Title and meta */
+.app-title {
+  font-weight: 700;
+  font-size: 22px;
+  color: var(--accent);
+}
+.meta {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+/* Chat bubbles */
+.chat-inbox {
+  max-height: 360px;
+  overflow-y: auto;
+  padding: 8px;
+}
+.bubble-user {
+  background: var(--accent);
+  color: #fff;
+  padding: 10px;
+  border-radius: 12px;
+  margin: 8px 0;
+  text-align: right;
+  display: inline-block;
+  max-width: 80%;
+}
+.bubble-assistant {
+  background: var(--accent-2);
+  color: #fff;
+  padding: 10px;
+  border-radius: 12px;
+  margin: 8px 0;
+  text-align: left;
+  display: inline-block;
+  max-width: 80%;
+}
+
+/* Key-value labels */
+.kv {
+  color: var(--muted);
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+.rating {
+  font-weight: 600;
+  color: var(--accent);
+}
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+  .app-title { font-size: 18px; }
+  .card { padding: 12px; }
+  .bubble-user, .bubble-assistant { max-width: 100%; font-size: 14px; }
+}
 </style>
 """
 
@@ -182,7 +257,7 @@ def recommend(df: pd.DataFrame, tfidf_matrix, selected_prod: int, top_n: int = 5
             break
     return results
 
-# ---------- Assistant (AI-like; product-specific) ----------
+# ---------- Assistant (product-specific) ----------
 PRODUCT_FEATURES_MAP = {
     101: [
         "Ergonomic low-profile shell for comfort",
@@ -280,7 +355,7 @@ def assistant_reply(user_text: str, df: pd.DataFrame, selected_prod: int):
     if has_any(["recommend", "similar", "suggest", "like"]):
         return "Use 'Recommend from selected' to get similar items based on description and tags."
 
-    # compare: extract an ID if mentioned (e.g., "compare 101 vs 105" or "compare 103")
+    # compare: extract an ID if mentioned
     if has_any(["compare", "versus", "vs", "better", "alternative"]):
         ids = re.findall(r"\b(101|102|103|104|105)\b", user_raw)
         if ids:
