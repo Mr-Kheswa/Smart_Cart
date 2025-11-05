@@ -147,11 +147,13 @@ def assistant_build_explanation_from_row(row: pd.Series) -> str:
     category = row.get("category", "Unknown")
     tags = row.get("tags", "")
     description = str(row.get("description", "")).strip()
-    price = row.get("price", "")
-    rating = row.get("rating", "")
-    stock = row.get("stock", "")
+    price = row.get("price", "N/A")
+    rating = row.get("rating", "N/A")
+    stock = row.get("stock", "N/A")
+
     summary = short_summary(description, max_chars=300)
     tag_list = ", ".join([t.strip() for t in (tags or "").split(";") if t.strip()]) or "—"
+
     explanation = (
         f"{name}\n\n"
         f"Category: {category}\n"
@@ -162,17 +164,23 @@ def assistant_build_explanation_from_row(row: pd.Series) -> str:
     )
     return explanation
 
+
 def assistant_reply(user_text: str, df: pd.DataFrame, selected_prod: int):
     user = (user_text or "").strip().lower()
     row = df.loc[df["product_id"] == selected_prod]
+
     if row.empty:
         return "I can't find the selected product. Please choose another product from the left."
+
     r = row.iloc[0]
     name = r.get("name", "this product")
     description = str(r.get("description", "")).strip()
     tags = r.get("tags", "")
     rating = r.get("rating", "")
+    price = r.get("price", "N/A")
+    stock = r.get("stock", "N/A")
 
+    # Intent dictionary
     intents = {
         "features": ["feature", "features", "what does", "what is", "spec", "specs", "specification"],
         "usage": ["use", "how to", "how do", "setup", "install", "apply", "charge"],
@@ -184,47 +192,55 @@ def assistant_reply(user_text: str, df: pd.DataFrame, selected_prod: int):
         "recommend": ["recommend", "suggest", "similar"],
         "greeting": ["hi", "hello", "hey", "hey,"]
     }
+
+    # Match intent
     matched = None
     for intent, keywords in intents.items():
-        for kw in keywords:
-            if kw in user:
-                matched = intent
-                break
-        if matched:
+        if any(kw in user for kw in keywords):
+            matched = intent
             break
 
+    # Responses
     if not user or matched == "greeting":
-        return f"Hello. Let's chat about '{name}'. Ask about features, usage, benefits, tags or rating."
+        return f"Hello 👋. Let's chat about **{name}**. You can ask me about its features, usage, benefits, tags, or rating."
+
     if matched == "features":
         sentences = [s.strip() for s in description.split(".") if s.strip()]
-        reply = "Features: "
         if sentences:
-            reply += " ".join(sentences[:2]) + (". " if len(sentences) >= 2 else " ")
-        else:
-            reply += "No detailed features available in the description."
-        return reply
+            return f"🔎 Features of **{name}**: " + " ".join(sentences[:2]) + ("..." if len(sentences) > 2 else "")
+        return f"No detailed features are available for **{name}**."
+
     if matched == "usage":
-        return f"How to use '{name}': {short_summary(description, max_chars=200)}"
+        return f" How to use **{name}**: {short_summary(description, max_chars=200)}"
+
     if matched == "compare":
-        return "Use the left controls to generate recommendations, then ask me to compare two product IDs."
+        return " Use the left controls to generate recommendations, then ask me to compare two product IDs."
+
     if matched == "benefit":
-        return f"Benefits: This product delivers practical value through {tags.replace(';',', ') or 'its described features'}."
+        return f" Benefits of **{name}**: It provides value through {tags.replace(';', ', ') or 'its described features'}."
+
     if matched == "price":
-        return f"The listed price is {r.get('price','unknown')}."
+        return f" The listed price of **{name}** is {price}."
+
     if matched == "rating":
-        return f"Rating: {format_stars(rating)}"
+        return f" Rating for **{name}**: {format_stars(rating)}"
+
     if matched == "tags":
         tag_list = ", ".join([t.strip() for t in (tags or "").split(";") if t.strip()]) or "No tags set"
-        return f"Tags for this product: {tag_list}"
+        return f" Tags for **{name}**: {tag_list}"
+
     if matched == "recommend":
         return "Use 'Recommend from selected' on the left to get similar items."
 
+    # If user mentions a tag directly
     tag_words = [t.strip().lower() for t in (tags or "").split(";") if t.strip()]
     for w in tag_words:
         if w in user:
-            return f"I see you're asking about '{w}'. {short_summary(description, max_chars=200)}"
+            return f"I see you're asking about **{w}** in relation to **{name}**. {short_summary(description, max_chars=200)}"
 
-    return "I don't know the exact answer yet. Ask about features, usage, rating, tags, or request recommendations."
+    # Default fallback
+    return f"I don’t have an exact answer yet for that about **{name}**. Try asking about features, usage, rating, tags, or recommendations."
+
 
 # ---------- App ----------
 def run_app():
@@ -359,3 +375,4 @@ def run_app():
 
 if __name__ == "__main__":
     run_app()
+
