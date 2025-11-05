@@ -598,6 +598,7 @@ def run_app():
 with chat_col:
     st.markdown("<div class='card'>", unsafe_allow_html=True)
     st.subheader("Chat Assistance")
+
     # greet when empty or product changed
     if not st.session_state["chat"] or st.session_state.get("seed") != selected_prod:
         summary = short_summary(prod.get("description", ""), max_chars=160)
@@ -642,3 +643,4 @@ with chat_col:
         unsafe_allow_html=True
     )
     st.markdown("</div>", unsafe_allow_html=True)
+    
