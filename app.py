@@ -594,26 +594,51 @@ def run_app():
         st.markdown("<div class='small' style='margin-top:8px'>© Copyright 2025 Mr Kheswa. All rights reserved.</div>", unsafe_allow_html=True)
         st.markdown("</div>", unsafe_allow_html=True)
 
-    # Chat assistant
-    with chat_col:
-        st.markdown("<div class='card'>", unsafe_allow_html=True)
-        st.subheader("Chat Assistance")
-        # greet when empty or product changed
-        if not st.session_state["chat"] or st.session_state.get("seed") != selected_prod:
-            summary = short_summary(prod.get("description",""), max_chars=160)
-            st.session_state["chat"].append({"role":"assistant","text":f"Hello. You're viewing '{prod['name']}'. {summary} Ask about features, usage, comparisons, benefits, price, rating, tags, stock, or recommendations."})
-            st.session_state["seed"] = selected_prod
+# Chat assistant
+with chat_col:
+    st.markdown("<div class='card'>", unsafe_allow_html=True)
+    st.subheader("Chat Assistance")
+    # greet when empty or product changed
+    if not st.session_state["chat"] or st.session_state.get("seed") != selected_prod:
+        summary = short_summary(prod.get("description", ""), max_chars=160)
+        st.session_state["chat"].append({
+            "role": "assistant",
+            "text": f"Hello. You're viewing '{prod['name']}'. {summary} Ask about features, usage, comparisons, benefits, price, rating, tags, stock, or recommendations."
+        })
+        st.session_state["seed"] = selected_prod
 
-        st.markdown("<div class='chat-inbox'>", unsafe_allow_html=True)
-        for msg in st.session_state["chat"][-50:]:
-            if msg.get("role") == "user":
-        st.markdown(
-            f"<div class='bubble-user'><small>{msg['text']}</small></div>",
-            unsafe_allow_html=True
-        )
-    else:
-        st.markdown(
-            f"<div class='bubble-assistant'><small>{msg['text']}</small></div>",
-            unsafe_allow_html=True
-        )
-st.markdown("</div>", unsafe_allow_html=True)
+    # render chat history
+    st.markdown("<div class='chat-inbox'>", unsafe_allow_html=True)
+    for msg in st.session_state["chat"][-50:]:
+        if msg.get("role") == "user":
+            st.markdown(
+                f"<div class='bubble-user'><small>{msg['text']}</small></div>",
+                unsafe_allow_html=True
+            )
+        else:
+            st.markdown(
+                f"<div class='bubble-assistant'><small>{msg['text']}</small></div>",
+                unsafe_allow_html=True
+            )
+    st.markdown("</div>", unsafe_allow_html=True)
+
+    # input and callbacks
+    def _send_callback():
+        user_text = st.session_state.get("inbox_input", "").strip()
+        if not user_text:
+            return
+        st.session_state["chat"].append({"role": "user", "text": user_text})
+        reply = assistant_reply(user_text, df, selected_prod)
+        st.session_state["chat"].append({"role": "assistant", "text": reply})
+        st.session_state["inbox_input"] = ""
+
+    st.text_input("Type message (press Enter)", key="inbox_input", on_change=_send_callback)
+    if st.button("Clear chat", key="clear_chat"):
+        st.session_state["chat"] = []
+        st.session_state["seed"] = None
+
+    st.markdown(
+        "<div class='hint'>If the assistant can't answer, try asking about features, usage, comparisons, price, rating, tags, stock, or request recommendations from the left.</div>",
+        unsafe_allow_html=True
+    )
+    st.markdown("</div>", unsafe_allow_html=True)
