@@ -9,111 +9,149 @@ import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-# ---------------- Styles (professional + responsive for Smart Cart) ----------------
+# -------------------- Styling for Smart Cart --------------------
 PAGE_STYLE = """
 <style>
 :root {
-  --bg: #f9fafb;
+  --bg: #f6f7fb;
   --card: #ffffff;
-  --muted: #6b7280;
-  --accent: #2563eb;   /* Smart Cart blue */
-  --accent-2: #10b981; /* Emerald green */
+  --muted: #64748b;
+  --text: #0f172a;
+  --accent: #2563eb;    /* Smart Cart blue */
+  --accent-2: #10b981;  /* Emerald green */
+  --border: rgba(2, 6, 23, 0.08);
+  --shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
 }
 
 html, body, .stApp {
   background: var(--bg);
+  color: var(--text);
   font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  color: #111827;
-  margin: 0;
-  padding: 0;
 }
 
-/* Cards */
+.block-space { height: 14px; }
+
 .card {
   background: var(--card);
-  border: 1px solid rgba(0,0,0,0.06);
-  padding: 16px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-  margin-bottom: 16px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+  padding: 18px;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  margin-bottom: 14px;
 }
-.card:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.08); }
+.card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.10);
+}
 
-/* Header */
-.app-title { font-weight: 700; font-size: 22px; color: var(--accent); }
-.meta { color: var(--muted); font-size: 14px; }
+.app-title {
+  font-weight: 700;
+  font-size: 22px;
+  color: var(--accent);
+}
+.meta {
+  color: var(--muted);
+  font-size: 14px;
+}
 
-/* Key-value text */
-.kv { color: var(--muted); font-size: 14px; margin-bottom: 6px; }
-.rating { font-weight: 600; color: var(--accent); }
+/* Key/value text */
+.kv {
+  color: var(--muted);
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+.rating {
+  font-weight: 600;
+  color: var(--accent);
+}
 
 /* Chat */
-.chat-inbox { max-height: 360px; overflow-y: auto; padding: 8px; }
+.chat-inbox {
+  max-height: 430px;
+  overflow-y: auto;
+  padding: 8px;
+}
 .bubble-user {
   background: var(--accent);
-  color: #fff;
-  padding: 10px;
+  color: #ffffff;
+  padding: 10px 12px;
   border-radius: 12px 12px 4px 12px;
   margin: 8px 0;
   text-align: right;
   display: inline-block;
-  max-width: 80%;
+  max-width: 92%;
+  word-wrap: break-word;
 }
 .bubble-assistant {
   background: var(--accent-2);
-  color: #fff;
-  padding: 10px;
+  color: #ffffff;
+  padding: 10px 12px;
   border-radius: 12px 12px 12px 4px;
   margin: 8px 0;
   text-align: left;
   display: inline-block;
-  max-width: 80%;
+  max-width: 92%;
+  word-wrap: break-word;
 }
 
 /* Images */
-img, .stImage > img { border-radius: 10px; }
+img, .stImage > img {
+  border-radius: 12px;
+}
 .product-thumb {
   width: 100%;
   max-width: 160px;
-  border-radius: 10px;
-  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 12px;
+  border: 1px solid var(--border);
 }
 
-/* Inputs */
+/* Buttons and inputs */
 .stButton > button {
   background: var(--accent);
-  color: #fff;
-  border-radius: 8px;
+  color: #ffffff;
+  border-radius: 10px;
   border: none;
+  padding: 8px 14px;
 }
-.stTextInput > div > input { border-radius: 8px; }
+.stTextInput > div > input {
+  border-radius: 10px;
+}
 
-.small { color:#6b7f87; font-size:12px; }
-.hint { color:#6b7f87; font-size:13px; }
+/* Small text */
+.small { color: #6b7280; font-size: 12px; }
+.hint { color: #6b7280; font-size: 13px; }
 
 /* Responsive */
-@media (max-width: 768px) {
-  .app-title { font-size: 18px; }
-  .card { padding: 12px; }
+@media (max-width: 900px) {
+  .app-title { font-size: 20px; }
+  .card { padding: 14px; }
   .bubble-user, .bubble-assistant { max-width: 100%; font-size: 14px; }
-  .product-thumb { max-width: 120px; }
+  .product-thumb { max-width: 130px; }
+}
+@media (max-width: 640px) {
+  .app-title { font-size: 18px; }
 }
 </style>
 """
 
-# ---------------- Helpers for images (keeps your preview behavior) ----------------
+# -------------------- Image preview helper --------------------
 IMAGES_DIR = Path("data/images")
 
 def preview_image(path_or_url: str, caption: str = "", width: int | None = None, use_container_width: bool = True):
-    placeholder = "https://via.placeholder.com/600x400.png?text=No+Image"
+    """
+    Robust image preview:
+    - Accepts absolute/relative paths, filenames inside data/images, or URLs.
+    - Falls back to a placeholder when unavailable.
+    """
+    placeholder = "https://via.placeholder.com/640x400.png?text=No+Image"
     p = (path_or_url or "").strip()
     show = lambda data: st.image(data, caption=caption, use_container_width=use_container_width, width=width)
 
     if not p:
         return show(placeholder)
 
-    # direct path
+    # Direct path
     if os.path.exists(p):
         try:
             with open(p, "rb") as f:
@@ -121,7 +159,7 @@ def preview_image(path_or_url: str, caption: str = "", width: int | None = None,
         except Exception:
             pass
 
-    # relative path
+    # Relative path
     candidate = Path.cwd() / p
     if candidate.exists():
         try:
@@ -140,13 +178,13 @@ def preview_image(path_or_url: str, caption: str = "", width: int | None = None,
         except Exception:
             pass
 
-    # URL or fallback
+    # URL or final fallback
     try:
         return show(p)
     except Exception:
         return show(placeholder)
 
-# ---------------- Data: build in-app catalog (IDs 101–105) ----------------
+# -------------------- Catalog linked images --------------------
 def build_products_df() -> pd.DataFrame:
     products = [
         {
@@ -157,11 +195,10 @@ def build_products_df() -> pd.DataFrame:
             "rating": 4.3,
             "stock": "In stock",
             "tags": "wireless; mouse; ergonomic; portable; 2.4GHz",
-            "image_url": "data/images/wireless_mouse.jpg",
+            "image_url": "data/images/mouse.jpg",  # mouse
             "description": (
-                "A refined wireless mouse tuned for daily productivity. The ergonomic low-profile shell supports neutral wrist posture, "
-                "while a precision optical sensor keeps tracking smooth across common desk surfaces. Silent-click buttons reduce distraction, "
-                "and a lag-free 2.4 GHz receiver maintains stable control for mobile and desktop setups."
+                "Ergonomic wireless mouse with precision optical sensor, silent-click buttons, and lag-free 2.4GHz receiver. "
+                "Designed for smooth control across common desk surfaces and comfortable all-day use."
             ),
         },
         {
@@ -172,11 +209,10 @@ def build_products_df() -> pd.DataFrame:
             "rating": 4.1,
             "stock": "Limited stock",
             "tags": "wireless; keyboard; compact; low-profile; multi-device",
-            "image_url": "data/images/wireless_keyboard.jpg",
+            "image_url": "data/images/keyboard.jpg",  # keyboard
             "description": (
-                "A compact wireless keyboard designed for clean, efficient desks. Tenkeyless layout saves space without sacrificing essentials, "
-                "and low-profile scissor switches deliver crisp, consistent feedback. Multi-device pairing lets you switch between laptop, tablet, "
-                "and TV in seconds—ideal for flexible workflows."
+                "Compact wireless keyboard featuring low-profile scissor switches and multi-device pairing. "
+                "A clean tenkeyless design optimizes desk space without sacrificing typing comfort."
             ),
         },
         {
@@ -187,10 +223,10 @@ def build_products_df() -> pd.DataFrame:
             "rating": 4.5,
             "stock": "In stock",
             "tags": "usb-c; hub; hdmi; 100w pd; sd card",
-            "image_url": "data/images/usb_c_hub.jpg",
+            "image_url": "data/images/hub.jpg",  # hub
             "description": (
-                "A versatile USB-C hub that turns one port into a workstation. Connect a 4K external display over HDMI, keep your laptop powered with "
-                "100W Power Delivery passthrough, and attach peripherals via high-speed USB-A ports. Integrated SD/microSD readers streamline camera workflows."
+                "Versatile USB-C hub delivering 4K HDMI output, 100W Power Delivery passthrough, high-speed USB-A ports, "
+                "and SD/microSD card readers—turning one port into a full workstation."
             ),
         },
         {
@@ -201,10 +237,10 @@ def build_products_df() -> pd.DataFrame:
             "rating": 4.0,
             "stock": "In stock",
             "tags": "sleeve; laptop; water-resistant; padded; minimalist",
-            "image_url": "data/images/laptop_sleeve.jpg",
+            "image_url": "data/images/sleeve.jpg",  # sleeve
             "description": (
-                "A minimalist protective sleeve made for daily carry. Water-resistant fabric and dense foam padding guard against bumps, "
-                "while a soft microfleece lining prevents scuffs. The slim silhouette slides easily into backpacks and briefcases."
+                "Minimalist laptop sleeve with water-resistant exterior, dense foam padding, and microfleece lining. "
+                "Slim profile slides easily into backpacks and briefcases while guarding against scuffs."
             ),
         },
         {
@@ -215,10 +251,10 @@ def build_products_df() -> pd.DataFrame:
             "rating": 4.6,
             "stock": "Limited stock",
             "tags": "bluetooth; speaker; 12h battery; waterproof; stereo",
-            "image_url": "data/images/bluetooth_speaker.jpg",
+            "image_url": "data/images/speaker.jpg",  # speaker
             "description": (
-                "A portable Bluetooth speaker with confident sound and practical toughness. Balanced drivers and a passive bass radiator deliver punchy audio, "
-                "while a splash-resistant build and 12-hour battery life support listening indoors and outdoors."
+                "Portable Bluetooth speaker with balanced stereo drivers and a passive bass radiator. "
+                "Splash-resistant build and 12-hour battery life make it ready for indoor and outdoor listening."
             ),
         },
     ]
@@ -227,18 +263,12 @@ def build_products_df() -> pd.DataFrame:
         df[col] = df[col].fillna("").astype(str)
     return df
 
-# ---------------- Utilities (from your “second code”, polished) ----------------
-def ensure_image_column(df: pd.DataFrame) -> pd.DataFrame:
-    if "image_url" not in df.columns:
-        df["image_url"] = ""
-    else:
-        df["image_url"] = df["image_url"].fillna("")
-    return df
-
+# -------------------- Utilities --------------------
 def short_summary(text: str, max_chars: int = 300) -> str:
     txt = (text or "").strip()
     if len(txt) <= max_chars:
         return txt
+    # Prefer sentence boundaries
     parts = [p.strip() for p in txt.split(".") if p.strip()]
     acc = ""
     for p in parts:
@@ -263,29 +293,6 @@ def format_stars(rating: float, max_stars: int = 5) -> str:
     empty = max_stars - full - half
     return "★" * full + ("½" if half else "") + "☆" * empty + f"  ({r:.1f})"
 
-def assistant_build_explanation_from_row(row: pd.Series) -> str:
-    name = row.get("name", "Unknown product")
-    category = row.get("category", "Unknown")
-    tags = row.get("tags", "")
-    description = str(row.get("description", "")).strip()
-    price = row.get("price", "N/A")
-    rating = row.get("rating", "N/A")
-    stock = row.get("stock", "N/A")
-
-    summary = short_summary(description, max_chars=300)
-    tag_list = ", ".join([t.strip() for t in (tags or "").split(";") if t.strip()]) or "—"
-
-    explanation = (
-        f"{name}\n\n"
-        f"Category: {category}\n"
-        f"Price: R{price}  •  Rating: {format_stars(rating)}  •  Stock: {stock}\n"
-        f"Tags: {tag_list}\n\n"
-        f"Quick summary: {summary}\n\n"
-        f"Full description: {description or 'No additional details available.'}\n"
-    )
-    return explanation
-
-# ---------------- Recommendation engine (TF-IDF on descriptions) ----------------
 def build_tfidf(texts: list[str]):
     vectorizer = TfidfVectorizer(ngram_range=(1, 2), stop_words="english")
     X = vectorizer.fit_transform(texts)
@@ -298,7 +305,6 @@ def recommend(df: pd.DataFrame, tfidf_matrix, selected_prod: int, top_n: int = 5
     i = idx_map[selected_prod]
     sim_desc = cosine_similarity(tfidf_matrix[i], tfidf_matrix).flatten()
 
-    # Tag Jaccard
     def tag_set(s): return set([t.strip().lower() for t in str(s).split(";") if t.strip()])
     base_tags = tag_set(df.loc[i, "tags"])
     tag_sims = []
@@ -326,41 +332,38 @@ def recommend(df: pd.DataFrame, tfidf_matrix, selected_prod: int, top_n: int = 5
             break
     return results
 
-# ---------------- Chat assistant (AI-like, product-specific to IDs 101–105) ----------------
+# -------------------- Chat assistant (product-specific) --------------------
 PRODUCT_FEATURES_MAP = {
     101: [
-        "Ergonomic low-profile shell for comfort",
-        "Adjustable DPI optical tracking",
-        "Silent-click buttons and smooth glides"
+        "Ergonomic low-profile shell", "Precision optical sensor with adjustable DPI", "Silent-click buttons",
+        "Lag-free 2.4GHz receiver", "Smart sleep for extended battery life"
     ],
     102: [
-        "Space-saving tenkeyless layout",
-        "Low-profile scissor switches",
-        "Multi-device quick switching"
+        "Tenkeyless compact layout", "Low-profile scissor switches", "Multi-device quick switching",
+        "Dual-angle tilt feet", "Long-life battery with smart idle"
     ],
     103: [
-        "HDMI 4K external display output",
-        "100W USB-C Power Delivery passthrough",
-        "SD/microSD reader support"
+        "HDMI 4K output", "100W USB-C Power Delivery passthrough", "Two USB-A 3.0 ports",
+        "SD and microSD card readers", "Aluminum shell for heat dissipation"
     ],
     104: [
-        "Water-resistant exterior",
-        "Dense foam and microfleece lining",
-        "Slim profile with accessory pocket"
+        "Water-resistant exterior", "High-density foam and microfleece lining", "Slim profile",
+        "Accessory pocket for charger and mouse", "Reinforced seams"
     ],
     105: [
-        "Balanced stereo with bass radiator",
-        "IPX5 splash resistance",
-        "12-hour battery life"
+        "Balanced stereo drivers + bass radiator", "IPX5 splash resistance", "12-hour battery life",
+        "Bluetooth 5.3 quick pairing", "Hands-free calls with noise-reduced mic"
     ],
 }
+
 USAGE_GUIDE_MAP = {
-    101: "Plug in the USB receiver, power on the mouse, adjust DPI with the top button, and let smart sleep save battery when idle.",
-    102: "Enter pairing mode, select the keyboard from Bluetooth, then use quick-switch keys to toggle between paired devices.",
-    103: "Connect the hub to USB-C, attach HDMI to your display, plug power into PD for passthrough, and use USB/SD ports as needed.",
-    104: "Insert the laptop gently, zip fully, and store accessories in the outer pocket. Avoid overpacking to keep the slim silhouette.",
-    105: "Power on, pair via Bluetooth 5.3, adjust volume on-device, and recharge after sessions to maintain battery longevity.",
+    101: "Plug in the USB receiver, power on the mouse, adjust DPI on the top button, let smart sleep save battery when idle.",
+    102: "Enter pairing mode, connect via Bluetooth, use the quick-switch keys to toggle between paired devices.",
+    103: "Connect hub to USB-C, attach HDMI to your display, plug power into PD for passthrough, use USB/SD ports as needed.",
+    104: "Insert laptop gently, zip fully, store accessories in the outer pocket, avoid overpacking to keep the slim profile.",
+    105: "Power on, pair via Bluetooth 5.3, adjust volume on-device, recharge after sessions to maintain battery life.",
 }
+
 BENEFIT_MAP = {
     101: "Comfortable, quiet control with dependable tracking for mobile and desktop workflows.",
     102: "Space-efficient typing with crisp feedback and seamless device switching.",
@@ -373,7 +376,6 @@ def assistant_reply(user_text: str, df: pd.DataFrame, selected_prod: int):
     user_raw = (user_text or "").strip()
     user = user_raw.lower()
     row = df.loc[df["product_id"] == selected_prod]
-
     if row.empty:
         return "I can't find the selected product. Please choose another product from the left."
 
@@ -386,9 +388,10 @@ def assistant_reply(user_text: str, df: pd.DataFrame, selected_prod: int):
     stock = r.get("stock", "N/A")
     features = PRODUCT_FEATURES_MAP.get(selected_prod, [])
 
+    # intent keywords
     intents = {
         "features": ["feature", "features", "spec", "specs", "specification", "details"],
-        "usage": ["use", "usage", "how", "how to", "setup", "install", "pair", "connect"],
+        "usage": ["use", "usage", "how", "setup", "install", "pair", "connect"],
         "compare": ["compare", "better", "vs", "versus", "alternative"],
         "benefit": ["benefit", "benefits", "advantage", "value", "why"],
         "price": ["price", "cost", "expensive", "cheap"],
@@ -399,19 +402,16 @@ def assistant_reply(user_text: str, df: pd.DataFrame, selected_prod: int):
         "greeting": ["hi", "hello", "hey", "good day"]
     }
 
-    # token-based detection
     tokens = re.findall(r"\b[\w\-]+\b", user)
     matched = None
-    for intent, keywords in intents.items():
-        if any(kw in tokens for kw in keywords):
+    for intent, kws in intents.items():
+        if any(kw in tokens for kw in kws):
             matched = intent
             break
 
-    # Greeting or empty
     if not user or matched == "greeting":
         return f"Hello. You're viewing {name}. Ask about features, usage, comparisons, benefits, price, rating, tags, stock, or recommendations."
 
-    # Intent-specific replies
     if matched == "features":
         if features:
             return f"Key features of {name}: " + "; ".join(features) + "."
@@ -463,42 +463,45 @@ def assistant_reply(user_text: str, df: pd.DataFrame, selected_prod: int):
     if matched == "recommend":
         return "Use 'Recommend from selected' to get similar items based on tags and description."
 
-    # Tag-aware fallback
+    # tag-aware fallback
     tag_words = [t.strip().lower() for t in (tags or "").split(";") if t.strip()]
     for w in tag_words:
         if w in tokens:
             return f"Regarding {w} on {name}: {short_summary(description, max_chars=200)}"
 
-    # Default fallback
     return f"I don’t have an exact answer yet for that about {name}. Try asking about features, usage, comparisons, price, rating, tags, stock, or recommendations."
 
-# ---------------- App (from your “third code”, unified and fixed) ----------------
+# -------------------- App --------------------
 def run_app():
     st.set_page_config(page_title="Smart Cart", layout="wide")
     st.markdown(PAGE_STYLE, unsafe_allow_html=True)
 
-    try:
-        df = build_products_df()
-    except Exception as e:
-        st.error(f"Failed to build products: {e}")
-        return
+    df = build_products_df()
+    _, tfidf = build_tfidf(df["description"].tolist())
 
-    df = ensure_image_column(df)
-    vect, tfidf = build_tfidf(df["description"].tolist())
-
+    # Session state
     st.session_state.setdefault("chat", [])
     st.session_state.setdefault("recs", [])
     st.session_state.setdefault("seed", None)
     st.session_state.setdefault("inbox_input", "")
 
     # Header
-    st.markdown("<div class='card'><div style='display:flex;align-items:center;gap:10px'><div style='font-size:20px' class='app-title'>Smart Cart</div><div class='meta'>Artificial Intelligence powered product recommender.</div></div></div>", unsafe_allow_html=True)
-    st.markdown("")
+    st.markdown(
+        "<div class='card'>"
+        "<div style='display:flex;align-items:center;gap:10px'>"
+        "<div class='app-title'>Smart Cart</div>"
+        "<div class='meta'>Professional, AI-powered product recommender and chat assistance.</div>"
+        "</div>"
+        "</div>", unsafe_allow_html=True
+    )
 
-    controls, content = st.columns([1, 2], gap="large")
+    st.markdown("<div class='block-space'></div>", unsafe_allow_html=True)
+
+    # Three-column responsive layout: controls (left), content (center), chat (right)
+    controls_col, content_col, chat_col = st.columns([1, 1.8, 1.2], gap="large")
 
     # Controls
-    with controls:
+    with controls_col:
         st.markdown("<div class='card'>", unsafe_allow_html=True)
         st.subheader("Controls")
         choice = st.selectbox("Choose product", df["product_id"].astype(str) + " — " + df["name"])
@@ -513,93 +516,98 @@ def run_app():
                 st.session_state["chat"].append({"role": "assistant", "text": f"Recommended {len(recs)} items for {selected_prod}."})
             except Exception as e:
                 st.error(f"Recommendation error: {e}")
-        st.markdown("<div class='small' style='margin-top:8px'>Tip: Pick a product then ask the assistant to explain or request recommendations.</div>", unsafe_allow_html=True)
+        st.markdown("<div class='small' style='margin-top:8px'>Tip: Pick a product then ask the assistant to explain, compare, or request recommendations.</div>", unsafe_allow_html=True)
         st.markdown("</div>", unsafe_allow_html=True)
 
-    # Content
-    with content:
+    # Content: product details + recommendations
+    with content_col:
+        # Product details
         st.markdown("<div class='card'>", unsafe_allow_html=True)
         st.subheader("Product details")
         prod = df[df["product_id"] == selected_prod].iloc[0]
-        cols = st.columns([1, 2])
-        with cols[0]:
-            img_val = prod.get("image_url", "")
-            preview_image(img_val, caption=prod["name"])
-        with cols[1]:
+        pcols = st.columns([1, 2])
+        with pcols[0]:
+            preview_image(prod.get("image_url", ""), caption=prod["name"])
+        with pcols[1]:
             st.markdown(f"### {prod['name']}")
             st.markdown(f"<div class='kv'>Category: {prod.get('category','')}</div>", unsafe_allow_html=True)
-            st.markdown(f"<div class='kv'>Price: R{prod.get('price',''):.2f}</div>", unsafe_allow_html=True)
+            st.markdown(f"<div class='kv'>Price: R{prod.get('price',0):.2f}</div>", unsafe_allow_html=True)
             st.markdown(f"<div class='kv'>Rating: <span class='rating'>{format_stars(prod.get('rating',''))}</span></div>", unsafe_allow_html=True)
+            st.markdown(f"<div class='kv'>Stock: {prod.get('stock','')}</div>", unsafe_allow_html=True)
             st.markdown(f"<div class='kv'>Tags: {', '.join([t.strip() for t in str(prod.get('tags','')).split(';') if t.strip()]) or '—'}</div>", unsafe_allow_html=True)
-            st.write(short_summary(prod.get("description",""), max_chars=450))
-            st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
+            st.write(short_summary(prod.get("description",""), max_chars=480))
         st.markdown("</div>", unsafe_allow_html=True)
 
-        st.markdown("<div style='height:12px'></div>", unsafe_allow_html=True)
+        st.markdown("<div class='block-space'></div>", unsafe_allow_html=True)
 
+        # Recommendations
         st.markdown("<div class='card'>", unsafe_allow_html=True)
         st.subheader("Recommendations")
         recs = st.session_state.get("recs", [])
         if not recs:
             st.info("No recommendations yet. Use the controls to generate them.")
         else:
-            for r in recs:
-                rc = r
-                cols = st.columns([1, 4])
-                with cols[0]:
-                    row = df[df["product_id"] == rc["product_id"]]
+            for rc in recs:
+                row = df[df["product_id"] == rc["product_id"]]
+                rcols = st.columns([1, 4])
+                with rcols[0]:
                     if not row.empty:
                         img_val = row.iloc[0].get("image_url","")
-                        if img_val:
-                            preview_image(img_val, caption=row.iloc[0].get("name",""), width=120, use_container_width=False)
-                        else:
-                            st.image("https://via.placeholder.com/160x120.png?text=IMG", width=120, use_container_width=False)
+                        preview_image(img_val, caption=row.iloc[0].get("name",""), width=140, use_container_width=False)
                     else:
-                        st.image("https://via.placeholder.com/160x120.png?text=IMG", width=120, use_container_width=False)
-                with cols[1]:
+                        st.image("https://via.placeholder.com/160x120.png?text=IMG", width=140, use_container_width=False)
+                with rcols[1]:
                     st.markdown(f"**{rc['name']}**  •  *{rc.get('category','')}*")
                     st.markdown(f"<div class='kv'>Score: {rc.get('score',0):.3f}</div>", unsafe_allow_html=True)
                     if not row.empty:
-                        st.write(short_summary(row.iloc[0].get("description",""), max_chars=200))
+                        st.write(short_summary(row.iloc[0].get("description",""), max_chars=220))
                 st.markdown("---")
-    
-        st.markdown("<div class='small' style='margin-top:8px'>© Copyright 2025 Mr Kheswa. All rights reserved.</div>", unsafe_allow_html=True)
         st.markdown("</div>", unsafe_allow_html=True)
 
-        st.markdown("<div style='height:12px'></div>", unsafe_allow_html=True)
-
-        # Chat assistant (real-time)
+    # Chat assistant on the right-hand side
+    with chat_col:
         st.markdown("<div class='card'>", unsafe_allow_html=True)
         st.subheader("Chat Assistance")
         # greet when empty or product changed
         if not st.session_state["chat"] or st.session_state.get("seed") != selected_prod:
             summary = short_summary(prod.get("description",""), max_chars=160)
-            st.session_state["chat"].append({"role":"assistant","text":f"Hello. Let's chat about '{prod['name']}'. {summary} Ask about features, usage, comparisons, benefits, price, rating, tags, stock, or recommendations."})
+            st.session_state["chat"].append({
+                "role":"assistant",
+                "text":f"Hello. You're viewing '{prod['name']}'. {summary} Ask about features, usage, comparisons, benefits, price, rating, tags, stock, or recommendations."
+            })
             st.session_state["seed"] = selected_prod
 
+        # render chat history
         st.markdown("<div class='chat-inbox'>", unsafe_allow_html=True)
-        for msg in st.session_state["chat"][-50:]:
+        for msg in st.session_state["chat"][-100:]:
             if msg.get("role") == "user":
                 st.markdown(f"<div class='bubble-user'><small>{msg['text']}</small></div>", unsafe_allow_html=True)
             else:
                 st.markdown(f"<div class='bubble-assistant'><small>{msg['text']}</small></div>", unsafe_allow_html=True)
         st.markdown("</div>", unsafe_allow_html=True)
 
+        # input + callbacks
         def _send_callback():
             user_text = st.session_state.get("inbox_input", "").strip()
             if not user_text:
                 return
-            st.session_state["chat"].append({"role":"user","text":user_text})
+            st.session_state["chat"].append({"role": "user", "text": user_text})
             reply = assistant_reply(user_text, df, selected_prod)
-            st.session_state["chat"].append({"role":"assistant","text":reply})
+            st.session_state["chat"].append({"role": "assistant", "text": reply})
             st.session_state["inbox_input"] = ""
 
         st.text_input("Type message (press Enter)", key="inbox_input", on_change=_send_callback)
-        if st.button("Clear chat", key="clear_chat"):
-            st.session_state["chat"] = []
-            st.session_state["seed"] = None
-        st.markdown("<div class='hint'>If the assistant can't answer, try asking about features, usage, comparisons, price, rating, tags, stock, or request recommendations from the left.</div>", unsafe_allow_html=True)
+        c1, c2 = st.columns(2)
+        with c1:
+            if st.button("Clear chat", key="clear_chat"):
+                st.session_state["chat"] = []
+                st.session_state["seed"] = None
+        with c2:
+            st.markdown("<div class='hint'>Ask me to explain features, compare IDs (e.g., 101 vs 105), or check price, rating, stock.</div>", unsafe_allow_html=True)
         st.markdown("</div>", unsafe_allow_html=True)
+
+    # Footer (optional)
+    st.markdown("<div class='small' style='margin-top:8px'>© 2025 Smart Cart. All rights reserved.</div>", unsafe_allow_html=True)
 
 if __name__ == "__main__":
     run_app()
