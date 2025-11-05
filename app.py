@@ -606,4 +606,14 @@ def run_app():
 
         st.markdown("<div class='chat-inbox'>", unsafe_allow_html=True)
         for msg in st.session_state["chat"][-50:]:
-            if msg.get("role") == "
+            if msg.get("role") == "user":
+        st.markdown(
+            f"<div class='bubble-user'><small>{msg['text']}</small></div>",
+            unsafe_allow_html=True
+        )
+    else:
+        st.markdown(
+            f"<div class='bubble-assistant'><small>{msg['text']}</small></div>",
+            unsafe_allow_html=True
+        )
+st.markdown("</div>", unsafe_allow_html=True)
